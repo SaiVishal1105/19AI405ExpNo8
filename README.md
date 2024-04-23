@@ -1,6 +1,6 @@
 <h1>ExpNo 8 : Solve Cryptarithmetic Problem,a CSP(Constraint Satisfaction Problem) using Python</h1> 
-<h3>Name: Saravanan N</h3>
-<h3>Register Number/Staff Id: TSML006</h3>
+<h3>Name: SAI VISHAL D</h3>
+<h3>Register Number: 212223230180</h3>
 <H3>Aim:</H3>
 <p>
     To solve Cryptarithmetic Problem,a CSP(Constraint Satisfaction Problem) using Python
@@ -71,6 +71,36 @@ Begin<br>
       return true<br>
    return false<br>
 End<br>
+### Program:
+```
+from constraint import Problem, AllDifferentConstraint
+
+def solve_cryptarithmetic(puzzle):
+    problem = Problem()
+    unique_chars = set(''.join(puzzle))
+    
+    for char in unique_chars:
+        problem.addVariable(char, range(10))
+    
+    problem.addConstraint(AllDifferentConstraint())
+    
+    for equation in puzzle.split(','):
+        left, right = equation.split('=')
+        left_sum = sum([10**(len(left) - i - 1) * int(left[i]) for i in range(len(left))])
+        right_sum = sum([10**(len(right) - i - 1) * int(right[i]) for i in range(len(right))])
+        problem.addConstraint(lambda a, b, result=right_sum: a + b == result, (left[0], left[-1]))
+    
+    solutions = problem.getSolutions()
+    return solutions
+
+if __name__ == "__main__":
+    puzzle = "SEND+MORE=MONEY"
+    solutions = solve_cryptarithmetic(puzzle)
+    print("Solutions:")
+    for solution in solutions:
+        print(solution)
+
+```
 <hr>
 <h2>Sample Input and Output:</h2>
 SEND = 9567<br>
