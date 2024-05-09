@@ -73,33 +73,35 @@ Begin<br>
 End<br>
 ### Program:
 ```
-from constraint import Problem, AllDifferentConstraint
+from itertools import permutations
 
-def solve_cryptarithmetic(puzzle):
-    problem = Problem()
-    unique_chars = set(''.join(puzzle))
-    
-    for char in unique_chars:
-        problem.addVariable(char, range(10))
-    
-    problem.addConstraint(AllDifferentConstraint())
-    
-    for equation in puzzle.split(','):
-        left, right = equation.split('=')
-        left_sum = sum([10**(len(left) - i - 1) * int(left[i]) for i in range(len(left))])
-        right_sum = sum([10**(len(right) - i - 1) * int(right[i]) for i in range(len(right))])
-        problem.addConstraint(lambda a, b, result=right_sum: a + b == result, (left[0], left[-1]))
-    
-    solutions = problem.getSolutions()
-    return solutions
+def solve_cryptarithmetic():
+    for perm in permutations(range(10), 8):
+        S, E, N, D, M, O, R, Y = perm
 
-if __name__ == "__main__":
-    puzzle = "SEND+MORE=MONEY"
-    solutions = solve_cryptarithmetic(puzzle)
-    print("Solutions:")
-    for solution in solutions:
-        print(solution)
+        # Check for leading zeros
+        if S == 0 or M == 0:
+            continue
 
+        # Check the equation constraints
+        SEND = 1000 * S + 100 * E + 10 * N + D
+        MORE = 1000 * M + 100 * O + 10 * R + E
+        MONEY = 10000 * M + 1000 * O + 100 * N + 10 * E + Y
+
+        if SEND + MORE == MONEY:
+            return SEND, MORE, MONEY
+
+    return None
+
+solution = solve_cryptarithmetic()
+
+if solution:
+    SEND, MORE, MONEY = solution
+    print(f'SEND = {SEND}')
+    print(f'MORE = {MORE}')
+    print(f'MONEY = {MONEY}')
+else:
+    print("No solution found.")
 ```
 <hr>
 <h2>Sample Input and Output:</h2>
